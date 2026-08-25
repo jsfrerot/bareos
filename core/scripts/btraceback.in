@@ -103,11 +103,5 @@ esac
 #
 PNAME="${PNAME} on $(hostname)"
 # Environment variable
-: ${BAREOS_BTRACEBACK_MTA:="@sbindir@/bsmtp"}
-: ${BAREOS_BTRACEBACK_HOST:="-h @smtp_host@"}
-: ${BAREOS_BTRACEBACK_FROM:="-f @dump_email@"}
-: ${BAREOS_BTRACEBACK_RECIPIENT:="@dump_email@"}
-: ${BAREOS_BTRACEBACK_TIMEOUT:=30}
-
-cat "${WD}/bareos.$2.traceback" \
-  | timeout -k 5s ${BAREOS_BTRACEBACK_TIMEOUT} ${BAREOS_BTRACEBACK_MTA} ${BAREOS_BTRACEBACK_HOST} ${BAREOS_BTRACEBACK_FROM} -s "Bareos ${DEBUGGER} traceback of ${PNAME}" ${BAREOS_BTRACEBACK_RECIPIENT}
+# If you don't want to send btraceback by email, just declare this variable to /bin/true
+: ${BAREOS_BTRACEBACK_SMTPCMD:="cat \"${WD}/bareos.$2.traceback\" | timeout -k 5s 30 @sbindir@/bstmp -h @smtp_host@ -f @dump_email@ -s \"Bareos ${DEBUGGER} traceback of ${PNAME}\" @dump_email@" }
